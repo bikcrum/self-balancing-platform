@@ -2,12 +2,12 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from tqdm import tqdm
+from datetime import datetime
 
 layers = keras.layers
 
-import gym
 import scipy.signal
-import time
+from self_balancer_env import SelfBalancerEnv
 
 
 def discounted_cumulative_sums(x, discount):
@@ -150,14 +150,11 @@ lam = 0.97
 target_kl = 0.01
 hidden_sizes = (64, 64)
 
-# True if you want to render the environment
-render = False
-
 # Initialize the environment and get the dimensionality of the
 # observation space and the number of possible actions
-env = gym.make("CartPole-v0")
+env = SelfBalancerEnv()
 observation_dimensions = env.observation_space.shape[0]
-num_actions = env.action_space.n
+num_actions = np.multiply(*env.action_space.nvec)
 
 # Initialize the buffer
 buffer = Buffer(observation_dimensions, steps_per_epoch)
@@ -178,6 +175,9 @@ value_optimizer = keras.optimizers.Adam(learning_rate=value_function_learning_ra
 # Initialize the observation, episode return and episode length
 observation, episode_return, episode_length = env.reset(), 0, 0
 
+# True if you want to render the environment
+render = True
+
 # Iterate over the number of epochs
 pb = tqdm(tqdm(range(epochs)))
 for epoch in pb:
@@ -194,8 +194,12 @@ for epoch in pb:
         # Get the logits, action, and take one step in the environment
         observation = observation.reshape(1, -1)
         logits, action = sample_action(observation)
-        print(action[0].numpy())
-        observation_new, reward, done, _ = env.step(action[0].numpy())
+        act = action[0].numpy()
+        x = act // 3
+        y = act % 3
+        x = (x - 1) * np.pi / 180.0
+        y = (y - 1) * np.pi / 180.0
+        observation_new, reward, done, _ = env.step(np.array([x, y]))
         episode_return += reward
         episode_length += 1
 
@@ -208,6 +212,8 @@ for epoch in pb:
 
         # Update the observation
         observation = observation_new
+
+        pb.set_description(f'Reward:{reward}')
 
         # Finish trajectory if reached to a terminal state
         terminal = done
@@ -245,3 +251,6 @@ for epoch in pb:
     print(
         f" Epoch: {epoch + 1}. Mean Return: {sum_return / num_episodes}. Mean Length: {sum_length / num_episodes}"
     )
+
+# save trained model
+actor.save(f'saved_models/actor-{datetime.now()}')
