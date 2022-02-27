@@ -9,6 +9,7 @@
     <option gravity="0 0 -9.81" timestep="0.01"/>
 
     <asset>
+        <mesh file="hand.STL"/>
         <mesh file="base.STL"/>
         <mesh file="middle.STL"/>
         <mesh file="top.STL"/>
@@ -19,38 +20,50 @@
     </asset>
 
     <worldbody>
-        <geom name="floor0" pos="0 0 -0.33" size='1 1 1' type="plane" condim="3" conaffinity='15' material="floor_mat"/>
+        <geom name="floor0" pos="0 0 -0.8" size='1 1 1' type="plane" condim="3" conaffinity='15' material="floor_mat"/>
         <light directional='true' pos='0 0 3' dir='0 -1 -1' diffuse='0.8 0.8 0.8' specular='0 0 0'/>
 
-
-        <body name="base" pos="0 0 0">
-
-
-            <geom name="link0" type="mesh" mesh="base" pos="0 0 0"/>
+        <body name="virtual_hand" pos="0 0 0">
+            <geom name="hand_link" type="mesh" mesh="hand" pos="0 0 0"/>
             <inertial pos="0 0 0" mass="0.1" diaginertia="0.3 0.3 0.3"/>
+            <joint name="joint0" axis="1 0 0" pos="-0.0885827 -0.0393701 -0.314961" range="-1.57 1.57"
+                   type="hinge" damping="30"/>
+            <joint name="joint1" axis="0 1 0" pos="-0.0885827 -0.0393701 -0.314961" range="-1.57 1.57"
+                   type="hinge" damping="30"/>
 
-            <body name="middle" pos="0 0 0">
-                <joint name="joint2" axis="1 0 0" pos="0 0 0" type="hinge" range="-1.57 1.57"/>
 
-                <geom name="link1" type="mesh" mesh="middle" pos="0 0 0" euler="0 0 0"/>
+            <body name="base" pos="0 0 0">
+
+                <geom name="link0" type="mesh" mesh="base" pos="0 0 0"/>
                 <inertial pos="0 0 0" mass="0.1" diaginertia="0.3 0.3 0.3"/>
 
-                <body name="top" pos="0.0656 -0.07546 0.0656">
-                    <joint name="joint3" axis="0 1 0" pos="0 0 0" type="hinge" range="-1.57 1.57"/>
+                <body name="middle" pos="0 0 0">
+                    <joint name="joint2" axis="1 0 0" pos="0 0 0" type="hinge" range="-1.57 1.57"/>
 
-                    <geom name="link2" type="mesh" mesh="top" pos="0 0 0" euler="0 0 0"/>
+                    <geom name="link1" type="mesh" mesh="middle" pos="0 0 0" euler="0 0 0"/>
                     <inertial pos="0 0 0" mass="0.1" diaginertia="0.3 0.3 0.3"/>
 
-                </body>
+                    <body name="top" pos="0.0656 -0.07546 0.0656">
+                        <joint name="joint3" axis="0 1 0" pos="0 0 0" type="hinge" range="-1.57 1.57"/>
 
+                        <geom name="link2" type="mesh" mesh="top" pos="0 0 0" euler="0 0 0"/>
+                        <inertial pos="0 0 0" mass="0.1" diaginertia="0.3 0.3 0.3"/>
+
+                    </body>
+
+                </body>
             </body>
         </body>
-
     </worldbody>
 
     <actuator>
+
+        <position ctrllimited="true" ctrlrange="-78.5 78.5" gear="50" name="hand_x" joint="joint0"/>
+        <position ctrllimited="true" ctrlrange="-78.5 78.5" gear="50" name="hand_y" joint="joint1"/>
         <position ctrllimited="true" ctrlrange="-31.4 31.4" gear="20" name="motor_x" joint="joint2"/>
         <position ctrllimited="true" ctrlrange="-31.4 31.4" gear="20" name="motor_y" joint="joint3"/>
+
+
     </actuator>
 
 </mujoco>

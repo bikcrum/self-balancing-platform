@@ -27,7 +27,7 @@ class SelfBalancerEnv:
         # move motor from current position
         # self.sim.data.ctrl[:] = (self.sim.data.qpos + action) * 10
 
-        self.sim.data.ctrl[:] += action * 20
+        self.sim.data.ctrl[2:] += action * 20
 
         # self.sim.data.qpos[:] = [np.pi/2, np.pi/2, 0, 0]
 
@@ -47,29 +47,31 @@ class SelfBalancerEnv:
         # only pos for now
 
         # compute position of upper platform given hand movement and motor position
-        return state.qpos
+        return np.concatenate((state.qpos[:2] + state.qpos[2:],
+                               state.qvel[:2] + state.qvel[2:]))
 
     # how far from upright position
     def _get_reward(self):
         # return 1 - sum(np.abs(self._get_observation()))
-        return 1 - max(np.abs(self._get_observation()))
+        return 1 - max(np.abs(self._get_observation()[:2]))
 
     @staticmethod
     def _random_angle_delta():
         return np.random.randint(-1, 2) * np.pi / 180.0
 
     def render(self):
-        # x, y = self._random_angle_delta(), self._random_angle_delta()
-        # self.sim.data.ctrl[:2] += np.array([x, y]) * 50
+        x, y = self._random_angle_delta(), self._random_angle_delta()
+        self.sim.data.ctrl[:2] += np.array([x, y]) * 50
 
         self.viewer.render()
 
-
+        # return just for debugging purpose, their negation should balance the platform
+        return x, y
 
     def reset(self, start_pos=None):
         self.sim.reset()
-        self.sim.data.qpos[:] = [0, 0] if start_pos is None else start_pos
-        self.sim.data.qvel[:] = [0, 0]
+        self.sim.data.qpos[:] = [0, 0, 0, 0] if start_pos is None else start_pos
+        self.sim.data.qvel[:] = [0, 0, 0, 0]
 
         # TODO: refer todo for adding velocity
         return self._get_observation()[:2]

@@ -7,7 +7,7 @@ from self_balancer_env import SelfBalancerEnv
 
 env = SelfBalancerEnv()
 
-actor = keras.models.load_model('saved_models/actor')
+actor = keras.models.load_model('saved_models/actor-2022-02-27 14:20:31.972807')
 
 observation = env.reset()
 
