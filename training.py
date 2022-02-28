@@ -262,5 +262,5 @@ for epoch in pb:
 
 # save trained model
 actor.save(f'saved_models/actor-{datetime.now()}')
-with open('reports/flat-balance-rewards.txt', 'w') as f:
+with open('reports/hand-balance-rewards.txt', 'w') as f:
     f.write(json.dumps(epoch_rewards))
