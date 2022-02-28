@@ -1,3 +1,5 @@
+import json
+
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
@@ -176,15 +178,18 @@ value_optimizer = keras.optimizers.Adam(learning_rate=value_function_learning_ra
 observation, episode_return, episode_length = env.reset(), 0, 0
 
 # True if you want to render the environment
-render = True
+render = False
 
 # Iterate over the number of epochs
 pb = tqdm(tqdm(range(epochs)))
+epoch_rewards = []
 for epoch in pb:
     # Initialize the sum of the returns, lengths and number of episodes for each epoch
     sum_return = 0
     sum_length = 0
     num_episodes = 0
+
+    rewards = []
 
     # Iterate over the steps of each epoch
     for t in range(steps_per_epoch):
@@ -214,6 +219,7 @@ for epoch in pb:
         observation = observation_new
 
         pb.set_description(f'Reward:{reward}')
+        rewards.append(reward)
 
         # Finish trajectory if reached to a terminal state
         terminal = done
@@ -252,5 +258,9 @@ for epoch in pb:
         f" Epoch: {epoch + 1}. Mean Return: {sum_return / num_episodes}. Mean Length: {sum_length / num_episodes}"
     )
 
+    epoch_rewards.append(rewards)
+
 # save trained model
 actor.save(f'saved_models/actor-{datetime.now()}')
+with open('reports/flat-balance-rewards.txt', 'w') as f:
+    f.write(json.dumps(epoch_rewards))
