@@ -20,16 +20,13 @@ class SelfBalancerEnv:
 
         self.observation_space = spaces.Box(low=-np.pi / 2.0, high=np.pi / 2.0, shape=(2,))
 
-        self.action_space = MultiDiscrete((3, 3))
+        self.action_space = spaces.Box(low=-np.pi / 2.0, high=np.pi / 2.0, shape=(2,))
 
     def step(self, action):
         # since gear=10 in mujoco, we mupliply radian angle by 10
         # move motor from current position
-        # self.sim.data.ctrl[:] = (self.sim.data.qpos + action) * 10
 
-        self.sim.data.ctrl[2:] += action * 20
-
-        # self.sim.data.qpos[:] = [np.pi/2, np.pi/2, 0, 0]
+        self.sim.data.ctrl[2:] = action * 20
 
         self.sim.step()
 
@@ -37,7 +34,7 @@ class SelfBalancerEnv:
         reward = self._get_reward()
         # observation, reward, done, info
 
-        # todo use velocity (ob[2:]) to improve wobbliness
+        # todo use velocity (ob[4:]) to improve wobbliness
         return ob[:2], reward, reward < -0.5, {}
 
     def _get_observation(self):
@@ -53,25 +50,33 @@ class SelfBalancerEnv:
     # how far from upright position
     def _get_reward(self):
         # return 1 - sum(np.abs(self._get_observation()))
-        return 1 - max(np.abs(self._get_observation()[:2]))
+        obs = self._get_observation()[:2]
+        # delta = obs[:2] + obs[2:]
+        return 1 - max(np.abs(obs))
 
     @staticmethod
     def _random_angle_delta():
         return np.random.randint(-1, 2) * np.pi / 180.0
 
     def render(self):
-        x, y = self._random_angle_delta(), self._random_angle_delta()
-        self.sim.data.ctrl[:2] += np.array([x, y]) * 50
-
         self.viewer.render()
 
-        # return just for debugging purpose, their negation should balance the platform
-        return x, y
+    def noise(self):
+        # random hand controller with gear=50
+        x, y = self._random_angle_delta(), self._random_angle_delta()
+        self.sim.data.ctrl[:2] += np.array([x, y]) * 50
+        self.sim.step()
+
+        return self.sim.data.ctrl[:2] / 50.0
+
+    def set_noise(self, noise):
+        # random hand controller with gear=50
+        self.sim.data.ctrl[:2] = np.array(noise) * 50
+        self.sim.step()
 
     def reset(self, start_pos=None):
         self.sim.reset()
         self.sim.data.qpos[:] = [0, 0, 0, 0] if start_pos is None else start_pos
         self.sim.data.qvel[:] = [0, 0, 0, 0]
 
-        # TODO: refer todo for adding velocity
         return self._get_observation()[:2]
