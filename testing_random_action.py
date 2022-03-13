@@ -9,7 +9,7 @@ from tqdm import tqdm
 from self_balancer_env_v2 import SelfBalancerEnv_v2
 
 env = SelfBalancerEnv_v2()
-actor = keras.models.load_model('saved_models/actor-continuous-2022-03-12 23:15:59.343611')
+actor = keras.models.load_model('saved_models/actor-continuous-2022-03-13 01:11:16.241599')
 
 action_dimension = env.action_space.shape[0]
 tq = tqdm(count())

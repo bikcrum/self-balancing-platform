@@ -3,7 +3,7 @@ import json
 import numpy as np
 from matplotlib import pyplot as plt
 
-data = json.load(open('saved_reports/hand-balance-continuous-rewards-2022-03-12 23:15:59.343611.txt', 'r'))
+data = json.load(open('saved_reports/hand-balance-continuous-rewards-2022-03-13 01:11:16.241599.txt', 'r'))
 data = np.array(data)
 plt.plot(data.mean(axis=1))
 plt.title(f'Training episode vs rewards\n{data.shape[1]} steps/episode, Max reward=1/step')

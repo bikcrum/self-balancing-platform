@@ -18,7 +18,7 @@ class SelfBalancerEnv_v2:
         self.sim.set_state(sim_state)
 
         # The topmost platform is observed as polar coordinates using two angles ranging between -90 to 90
-        self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(6,))
+        self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(3,))
 
         # The action space is target rotation of motors
         self.action_space = spaces.Box(low=-np.pi / 2.0, high=np.pi / 2.0, shape=(2,))
@@ -48,13 +48,12 @@ class SelfBalancerEnv_v2:
         return observation, reward, done, {}
 
     def _get_observation(self):
-        return self.sim.data.sensordata
+        vec = self.sim.data.sensordata[3:] - self.sim.data.sensordata[:3]
+        return vec / np.linalg.norm(vec)
 
     def _get_reward(self, obs):
         zaxis = np.array([0, 0, 1])
-        x = obs[3:]
-        y = obs[:3]
-        p = zaxis.dot(x - y) / np.linalg.norm(zaxis) / np.linalg.norm(x - y)
+        p = zaxis.dot(obs) / np.linalg.norm(zaxis) / np.linalg.norm(obs)
 
         return 1 - np.math.acos(p)
 
