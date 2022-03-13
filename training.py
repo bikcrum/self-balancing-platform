@@ -5,7 +5,7 @@ from tqdm import tqdm
 from datetime import datetime
 from tensorflow_probability.python.distributions.mvn_diag import MultivariateNormalDiag
 import scipy.signal
-from self_balancer_env import SelfBalancerEnv
+from self_balancer_env_v2 import SelfBalancerEnv_v2
 import json
 
 layers = keras.layers
@@ -245,7 +245,7 @@ class PPO:
 
 
 # Initialize the environment
-env = SelfBalancerEnv()
+env = SelfBalancerEnv_v2()
 observation, episode_return, episode_length = env.reset(), 0, 0
 
 steps_per_epoch = 4000
@@ -263,7 +263,7 @@ ppo = PPO(observation_dimension=env.observation_space.shape[0],
           gamma=0.99,
           lam=0.95)
 
-render = False
+render = True
 noise = False
 render_freq = 1
 noise_freq = 1
@@ -301,6 +301,8 @@ for epoch in pb:
         observation = observation_new
 
         rewards.append(reward)
+
+        # print(reward)
 
         # Finish trajectory if reached to a terminal state
         terminal = done
