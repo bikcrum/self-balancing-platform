@@ -9,7 +9,7 @@ import threading
 
 env = SelfBalancerEnv()
 
-interpreter = tf.lite.Interpreter(model_path="actor.tflite")
+interpreter = tf.lite.Interpreter(model_path="deployed_models/actor.tflite")
 interpreter.allocate_tensors()
 
 input_details = interpreter.get_input_details()
