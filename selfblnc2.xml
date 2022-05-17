@@ -1,0 +1,52 @@
+<mujoco model="example">
+    <compiler angle="radian" meshdir="meshes" coordinate="local" inertiafromgeom="false" settotalmass="14"/>
+    <default>
+        <joint armature=".1" damping=".01" limited="false" solimplimit="0 .8 .03" solreflimit=".02 1" stiffness="8"/>
+        <geom conaffinity="0" condim="3" contype="1" friction=".4 .1 .1" rgba="0.8 0.6 .4 1" solimp="0.0 0.8 0.01"
+              solref="0.02 1"/>
+        <motor ctrllimited="true" ctrlrange="-1 1"/>
+    </default>
+    <size nstack="300000" nuser_geom="1"/>
+    <option gravity="0 0 -9.81" timestep="0.01"/>
+
+    <asset>
+        <mesh file="base.STL"/>
+        <mesh file="middle.STL"/>
+        <mesh file="top.STL"/>
+    </asset>
+
+    <worldbody>
+
+        <light directional="true" pos="-0.5 0.5 3" dir="0 0 -1"/>
+
+        <body name="base" pos="0 0 0">
+            <geom name="link0" type="mesh" mesh="base" pos="0 0 0" contype="2"/>
+            <inertial pos="0 0 0" mass="1" diaginertia="0.3 0.3 0.3"/>
+
+
+            <body name="middle" pos="0 0 0">
+                <joint name="joint1" damping="0.1"  axis="1 0 0" pos="0 0 0" range="1.57 4.71" type="hinge"/>
+
+                <geom name="link1" type="mesh" mesh="middle" pos="0 0 0" euler="0 0 0" contype="2"/>
+                <inertial pos="0 0 0" mass="1" diaginertia="0.3 0.3 0.3"/>
+
+                <body name="top" pos="20 -23 20">
+                    <joint name="joint2" axis="0 1 0" damping="0.1"  pos="0 0 0" range="1.57 4.71"
+                           type="hinge"/>
+
+
+                    <geom name="link2" type="mesh" mesh="top" pos="0 0 0" euler="0 0 0" contype="2"/>-->
+                    <inertial pos="0 0 0" mass="1" diaginertia="0.3 0.3 0.3"/>
+
+                </body>
+
+            </body>
+        </body>
+    </worldbody>
+
+    <actuator>
+        <motor gear="5000" name="joint1" joint="joint1"/>
+        <motor gear="60" name="joint2" joint="joint2"/>
+    </actuator>
+
+</mujoco>
