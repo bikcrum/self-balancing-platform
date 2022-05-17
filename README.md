@@ -1,6 +1,7 @@
 ## Self balancing
 
-Demo: [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/7F6NIbRNCeE/0.jpg)](https://www.youtube.com/watch?v=7F6NIbRNCeE)
+### Demo
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/7F6NIbRNCeE/0.jpg)](https://www.youtube.com/watch?v=7F6NIbRNCeE)
 
 ### Steps to run a project
 
