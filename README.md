@@ -1,4 +1,7 @@
-## Self balancing
+## Self balancing platfor
+
+### Description
+Oftentimes, it is hard to explicitly write instructions for a problem like a balancing task. Human tends to do it easily from the experience but we do not know how our subconscious mind does it so well. The way we learn is by reward and penalty. Suppose you are trying to balance a pole in your finger. Firstly you fail then progressively improve it from mistakes you've done or past experience. Similarly, for the balancing task, the machine model gets a penalty if it deviates from the balanced position but gets a reward as it approaches a balanced position. Progressively, it learns and becomes better at this. I modeled this in a simulator where it tries out different actions to maximize the reward and eventually learns what to do for every unbalanced state to make it balanced. Then, the model is transferred to hardware or real-world, and the result is visualized.
 
 ### Demo
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/7F6NIbRNCeE/0.jpg)](https://www.youtube.com/watch?v=7F6NIbRNCeE)
