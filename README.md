@@ -32,3 +32,11 @@
 | model_converter.ipynb      | Converts tensorflow model to lite version required for deployment                      |
 | test-tflite.py  | Tests if lite version also works                                                       |
 | frame_exporter.py  | Exports frame into desired graph used in the latex                                     |
+
+
+### Project slides and report
+- Slides: https://drive.google.com/file/d/1eFKYXUDg4m0IQ7lJoQ1lyAW53x_PREwU/view?usp=sharing
+- Report: https://drive.google.com/file/d/15l1oiXiA7_jSbQ0DV2EgFzqf8g7XDd0w/view?usp=sharing
+
+Want to learn more or contribute?
+Contact me at bikcrum@gmail.com
